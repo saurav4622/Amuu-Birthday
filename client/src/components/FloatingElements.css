@@ -1,0 +1,64 @@
+.floating-elements {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.emoji {
+  position: absolute;
+  font-size: 40px;
+  animation: floatAround 20s infinite;
+  opacity: 0.8;
+}
+
+.emoji:nth-child(1) {
+  top: 10%;
+  left: 10%;
+}
+
+.emoji:nth-child(2) {
+  top: 20%;
+  right: 15%;
+}
+
+.emoji:nth-child(3) {
+  bottom: 30%;
+  left: 20%;
+}
+
+.emoji:nth-child(4) {
+  bottom: 20%;
+  right: 10%;
+}
+
+.emoji:nth-child(5) {
+  top: 50%;
+  left: 5%;
+}
+
+.emoji:nth-child(6) {
+  top: 60%;
+  right: 5%;
+}
+
+@keyframes floatAround {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(50px, -50px) rotate(90deg);
+  }
+  50% {
+    transform: translate(-30px, -100px) rotate(180deg);
+  }
+  75% {
+    transform: translate(30px, -50px) rotate(270deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+  }
+}

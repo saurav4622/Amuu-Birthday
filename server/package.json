@@ -1,0 +1,21 @@
+{
+  "name": "birthday-app-server",
+  "version": "1.0.0",
+  "description": "Backend server for birthday web app",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "setup-email": "node setup-email.js"
+  },
+  "keywords": ["birthday", "express", "node"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "nodemailer": "^6.9.7",
+    "dotenv": "^16.3.1"
+  }
+}

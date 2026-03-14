@@ -185,3 +185,6 @@ app.listen(PORT, () => {
     console.log('   OTPs will be sent via email\n');
   }
 });
+
+// Using export default since package.json has "type": "module"
+export default app;

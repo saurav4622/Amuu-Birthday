@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   const verifySession = async (token) => {
     try {
-      const response = await axios.post('/api/auth/verify-session', { token });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/verify-session`, { token });
       if (response.data.success) {
         setUser({ email: response.data.email, token });
       } else {
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, otp) => {
     try {
-      const response = await axios.post('/api/auth/verify-otp', { email, otp });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/verify-otp`, { email, otp });
       if (response.data.success) {
         localStorage.setItem('authToken', response.data.token);
         setUser({ email: response.data.email, token: response.data.token });
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
 
   const requestOTP = async (email) => {
     try {
-      const response = await axios.post('/api/auth/request-otp', { email });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/request-otp`, { email });
       return response.data;
     } catch (error) {
       return {
@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('authToken');
     if (token) {
       try {
-        await axios.post('/api/auth/logout', { token });
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/logout`, { token });
       } catch (error) {
         console.error('Logout error:', error);
       }

@@ -18,7 +18,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Fetch birthday info from API
-    axios.get('/api/birthday-info')
+    axios.get(`${import.meta.env.VITE_API_URL}/api/birthday-info`)
       .then(response => setBirthdayInfo(response.data))
       .catch(error => {
         console.error('Error fetching birthday info:', error);
@@ -30,7 +30,7 @@ const Dashboard = () => {
       });
 
     // Fetch message data from API
-    axios.get('/api/message')
+    axios.get(`${import.meta.env.VITE_API_URL}/api/message`)
       .then(response => setMessageData(response.data))
       .catch(error => {
         console.error('Error fetching message:', error);

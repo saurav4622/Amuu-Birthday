@@ -1,27 +1,26 @@
-import { doc, onSnapshot } from "firebase/firestore"; // Added for Cloud Sync
+import { doc, onSnapshot } from "firebase/firestore";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { db } from "../firebase"; // Added for Cloud Sync
+import { db } from "../firebase";
 import "./Phase2Keyhole.css";
 
 const normalize = (str) => (str || "").trim().toLowerCase();
 
 function Phase2Keyhole() {
   const navigate = useNavigate();
-  const [tumblers, setTumblers] = useState([]); // Now dynamic
+  const [tumblers, setTumblers] = useState([]); 
   const [values, setValues] = useState({});
   const [isSolved, setIsSolved] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // 1. Fetch questions from Admin Dashboard (Firebase)
+  // Fetch questions from Firebase
   useEffect(() => {
     const unsub = onSnapshot(doc(db, "birthdayContent", "phase2"), (docSnap) => {
       if (docSnap.exists()) {
         const questions = docSnap.data().questions || [];
         setTumblers(questions);
         
-        // Prepare empty input fields for whatever questions you added
         const initialValues = {};
         questions.forEach(t => initialValues[t.id] = "");
         setValues(initialValues);
@@ -69,12 +68,19 @@ function Phase2Keyhole() {
         animate={{ opacity: 1, y: 0 }}
         className="glass-card"
       >
+
+        {/* The Sleek Birthday Alert */}
+        <div className="birthday-alert">
+          <p className="alert-text">
+            <span className="alert-highlight">Happy Birthday Baby!</span> You need to unlock your surprise first... nothing comes free of cost. 😉
+          </p>
+          <div className="alert-price">Price: Correct Memories</div>
+        </div>
+
+        {/* The Clean Header (Only One) */}
         <header className="mb-8">
           <p className="text-[10px] uppercase tracking-[0.5em] text-fuchsia-400 font-bold mb-2">Phase 02</p>
           <h1 className="text-3xl font-light text-white tracking-tight">The Keyhole</h1>
-          <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-            The locks are forged from memories. <br/>Type the correct keys to proceed.
-          </p>
         </header>
 
         <form onSubmit={handleSubmit} className="space-y-6">

@@ -1,185 +1,95 @@
-# 🎉 Birthday Web App
+# 🎉 Interactive 3D Birthday Web App
 
-A beautiful, interactive multi-page birthday web application built with React and Node.js, featuring email-based OTP authentication.
+A highly interactive, multi-phase 3D birthday web application. Built with React, Three.js, and Node.js to provide a magical, personalized journey full of animations, cosmic themes, and cherished memories.
 
-## Features
+## ✨ Features
 
-- 🔐 **Email OTP Authentication** - Secure login with one-time password sent via email
-- ✨ Animated gradient background
-- 🎂 Interactive 3D flip card with birthday message
-- 🎊 Confetti animations
-- 🌟 Floating emoji decorations
-- 📱 Fully responsive design
-- 🎨 Smooth animations and transitions
-- 📄 **Multi-page Navigation** - Dashboard, Gallery, and Messages pages
-- 🔒 **Protected Routes** - Secure access to authenticated pages
+- **Multi-Phase 3D Journey:** A guided interactive experience transitioning through 6 beautiful phases.
+- **Immersive 3D Graphics:** Beautiful webGL-based scenes and interactions using Three.js and React-Three-Fiber.
+- **Fluid Animations:** Smooth page transitions, floating elements, and interactions powered by Framer Motion.
+- **Secure Access:** Email-based OTP authentication ensuring only the special someone can access it.
+- **Admin Dashboard:** A secret admin panel to seamlessly manage the memories and data.
+- **Sensory Experience:** Integrated interactive background audio to complement the visual journey.
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: React 18 with Vite, React Router
-- **Backend**: Node.js with Express
-- **Email**: Nodemailer for OTP delivery
-- **Styling**: CSS3 with animations
+- **Frontend:** React 18, Vite, React Router DOM, TailwindCSS
+- **3D & Animations:** Three.js, `@react-three/fiber`, `@react-three/drei`, Framer Motion
+- **Backend:** Node.js, Express
+- **Authentication / Data:** Firebase Authentication / Email OTP (Nodemailer)
 
-## Project Structure
+## 🗺️ Experience Phases
+
+- **Phase 1: Intro (`/intro`)** - The welcoming beginning of the journey.
+- **Phase 2: Keyhole (`/keyhole`)** - Unlocking the magical experience.
+- **Phase 3: Orbit (`/orbit`)** - An interactive 3D orbital sphere representing core memories.
+- **Phase 4: Whispers (`/whispers`)** - Floating 3D messages appearing gracefully.
+- **Phase 5: Celestial Timeline (`/stars`)** - A journey traversing through a starry timeline of memories.
+- **Phase 6: Final Wishes (`/wishes`)** - A heartfelt video conclusion.
+
+## 📁 Project Structure
 
 ```
 Birthday-Project/
-├── client/                 # React frontend
+├── client/                 # React Frontend (Vite)
 │   ├── src/
-│   │   ├── components/     # React components
-│   │   ├── context/        # Auth context
-│   │   ├── pages/          # Page components (Login, Dashboard, Gallery, Messages)
-│   │   ├── App.jsx         # Main app with routing
-│   │   └── main.jsx        # Entry point
-│   ├── package.json
-│   └── vite.config.js
-├── server/                 # Node.js backend
-│   ├── auth.js            # OTP generation and email sending
-│   ├── server.js          # Express server with API routes
-│   ├── env.example        # Environment variables template
-│   └── package.json
-└── README.md
+│   │   ├── components/     # Reusable React components & Protected Routes
+│   │   ├── context/        # Auth, AdminAuth, and Audio contexts
+│   │   ├── pages/          # Phase pages + Auth views
+│   │   └── App.jsx         # App routing
+├── server/                 # Node.js Express Backend
+│   ├── env.example         # Environment template
+│   └── server.js           # Express API and routes
+└── README.md               # Project documentation
 ```
 
-## Setup Instructions
+## 🚀 Setup Instructions
 
 ### Prerequisites
+- Node.js (v18+ recommended)
+- Firebase Account (for data management)
+- Email Account (for Nodemailer OTP sending)
 
-- Node.js (v16 or higher)
-- npm or yarn
-- Email account (Gmail recommended) for sending OTPs
+### 1. Installation
 
-### Email Configuration
+**Backend:**
+```bash
+cd server
+npm install
+```
 
-1. **For Gmail users:**
-   - Enable 2-Factor Authentication on your Google account
-   - Generate an App Password: https://support.google.com/accounts/answer/185833
-   - Use this App Password (not your regular password) in the `.env` file
+**Frontend:**
+```bash
+cd client
+npm install
+```
 
-2. **Create environment file:**
-   ```bash
-   cd server
-   cp env.example .env
-   ```
+### 2. Environment Configuration
 
-3. **Edit `.env` file with your email credentials:**
-   ```env
-   EMAIL_HOST=smtp.gmail.com
-   EMAIL_PORT=587
-   EMAIL_USER=your-email@gmail.com
-   EMAIL_PASS=your-app-password
-   EMAIL_FROM=your-email@gmail.com
-   PORT=3001
-   NODE_ENV=development
-   ```
+1. Create a `.env` in the `server` directory based on `env.example`.
+2. Configure **Email Credentials** (e.g. Gmail App Passwords) for sending login OTPs.
+3. Configure **Firebase Credentials** for any backend operations.
 
-### Installation
+### 3. Running Development Servers
 
-1. **Install backend dependencies:**
-   ```bash
-   cd server
-   npm install
-   ```
+**Start the Server:**
+```bash
+cd server
+npm start # or npm run dev
+```
+*(Runs on http://localhost:3001 by default)*
 
-2. **Install frontend dependencies:**
-   ```bash
-   cd ../client
-   npm install
-   ```
+**Start the Client:**
+```bash
+cd client
+npm run dev
+```
+*(Runs on Vite's default port, likely http://localhost:5173)*
 
-### Running the Application
+## 🔒 Access Roles
 
-1. **Start the backend server:**
-   ```bash
-   cd server
-   npm start
-   ```
-   The server will run on `http://localhost:3001`
+- **Guest/User:** Login via `/login` using the email-based OTP mechanism. All phases (`/intro`, `/keyhole`, etc.) are protected routes.
+- **Admin:** Access the secret admin dashboard via `/secret-admin/login` to securely manage application content data.
 
-2. **Start the frontend development server:**
-   ```bash
-   cd client
-   npm run dev
-   ```
-   The app will be available at `http://localhost:3000`
-
-3. **Access the application:**
-   - Navigate to `http://localhost:3000`
-   - You'll be redirected to the login page
-   - Enter your email address
-   - Check your email for the 6-digit OTP
-   - Enter the OTP to login
-   - Explore the Dashboard, Gallery, and Messages pages!
-
-## Pages
-
-- **Login** (`/login`) - Email-based OTP authentication
-- **Dashboard** (`/dashboard`) - Main birthday card with animations
-- **Gallery** (`/gallery`) - Photo gallery (customize with your photos)
-- **Messages** (`/messages`) - Special birthday messages
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/request-otp` - Request OTP for email
-  - Body: `{ "email": "user@example.com" }`
-- `POST /api/auth/verify-otp` - Verify OTP and login
-  - Body: `{ "email": "user@example.com", "otp": "123456" }`
-- `POST /api/auth/verify-session` - Verify session token
-- `POST /api/auth/logout` - Logout user
-
-### Content
-- `GET /api/birthday-info` - Returns birthday card front information
-- `GET /api/message` - Returns birthday message content
-
-## Customization
-
-- **Email Templates**: Edit the HTML email template in `server/auth.js`
-- **Birthday Messages**: Edit messages in `server/server.js` API routes
-- **Gallery Photos**: Add your photos in `client/src/pages/Gallery.jsx`
-- **Messages**: Customize messages in `client/src/pages/Messages.jsx`
-- **Styles**: Modify CSS files in respective component/page folders
-
-## Production Build
-
-1. **Build the React app:**
-   ```bash
-   cd client
-   npm run build
-   ```
-
-2. **Set NODE_ENV to production and start the server:**
-   ```bash
-   cd server
-   NODE_ENV=production npm start
-   ```
-   The server will serve the built React app.
-
-## Security Notes
-
-- OTPs expire after 5 minutes
-- Sessions expire after 24 hours
-- In production, consider using:
-  - Redis for OTP storage
-  - JWT tokens for sessions
-  - Rate limiting for OTP requests
-  - HTTPS for secure communication
-
-## Troubleshooting
-
-**Email not sending?**
-- Verify your `.env` file has correct credentials
-- For Gmail, ensure you're using an App Password, not your regular password
-- Check that 2FA is enabled on your Google account
-- Check server console for error messages
-
-**OTP not received?**
-- Check spam/junk folder
-- Verify email address is correct
-- Wait a few seconds and try again
-- Check server logs for errors
-
-## License
-
+## 📄 License
 ISC

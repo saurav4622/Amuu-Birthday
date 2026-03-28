@@ -2,8 +2,9 @@ import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-d
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AdminAuthProvider } from './context/AdminAuthContext';
-import { AuthProvider } from './context/AuthContext';
 import { AudioProvider } from './context/AudioContext';
+import { AuthProvider } from './context/AuthContext';
+import Phase6Video from './pages/Phase6Video';
 
 // Old Pages
 import AdminDashboard from './pages/AdminDashboard';
@@ -79,6 +80,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                 path="/wishes"
+                element={
+                  <ProtectedRoute>
+                    <Phase6Video />
+                  </ProtectedRoute>
+                }
+/>
 
               {/* If they type a wrong URL, send them back to login */}
               <Route path="/" element={<Navigate to="/login" replace />} />

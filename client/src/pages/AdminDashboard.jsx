@@ -4,7 +4,8 @@ import { useAdminAuth } from '../context/AdminAuthContext';
 import { db } from '../firebase';
 import './AdminDashboard.css';
 
-const TABS = ['Phase 2 (Keyhole)', 'Phase 3 (Orbit)', 'Phase 4 (Whispers)', 'Phase 5 (Timeline)'];
+// UPDATED: Added Phase 6 to the TABS array
+const TABS = ['Phase 2 (Keyhole)', 'Phase 3 (Orbit)', 'Phase 4 (Whispers)', 'Phase 5 (Timeline)', 'Phase 6 (Video)'];
 
 // Color options for the timeline dots
 const COLOR_OPTIONS = [
@@ -68,15 +69,16 @@ function AdminDashboard() {
     { id: 1, url: '', caption: '' }
   ]);
   
-  // NEW: Background Music State for Phase 3
   const [bgMusic, setBgMusic] = useState(null);
-
   const [poemLines, setPoemLines] = useState("");
   
   const [checkpoints, setCheckpoints] = useState([
     { id: 'start', date: '2002-06-04', label: 'My Birth', color: 'bg-indigo-400', isPermanent: true },
     { id: 'annu_birth', date: '2004-03-30', label: 'Annu', color: 'bg-pink-400', isPermanent: true }
   ]);
+
+  // NEW: State for Phase 6 Video URL
+  const [videoUrl, setVideoUrl] = useState("");
   
   const [uploadingIds, setUploadingIds] = useState({});
 
@@ -90,7 +92,7 @@ function AdminDashboard() {
         const p3Snap = await getDoc(doc(db, "birthdayContent", "phase3"));
         if (p3Snap.exists()) {
           setOrbitPhotos(p3Snap.data().photos || []);
-          setBgMusic(p3Snap.data().bgMusic || null); // Fetch Music
+          setBgMusic(p3Snap.data().bgMusic || null); 
         }
 
         const p4Snap = await getDoc(doc(db, "birthdayContent", "phase4"));
@@ -99,6 +101,12 @@ function AdminDashboard() {
         const p5Snap = await getDoc(doc(db, "birthdayContent", "phase5"));
         if (p5Snap.exists() && p5Snap.data().checkpoints) {
           setCheckpoints(p5Snap.data().checkpoints);
+        }
+
+        // NEW: Load Phase 6 Video Link
+        const p6Snap = await getDoc(doc(db, "birthdayContent", "phase6"));
+        if (p6Snap.exists()) {
+          setVideoUrl(p6Snap.data().url || "");
         }
       } catch (e) {
         console.error("Load Error:", e);
@@ -112,10 +120,13 @@ function AdminDashboard() {
     setIsSaving(true);
     try {
       await setDoc(doc(db, "birthdayContent", "phase2"), { questions: tumblers });
-      // Include the music URL when saving Phase 3
       await setDoc(doc(db, "birthdayContent", "phase3"), { photos: orbitPhotos, bgMusic: bgMusic });
       await setDoc(doc(db, "birthdayContent", "phase4"), { text: poemLines });
       await setDoc(doc(db, "birthdayContent", "phase5"), { checkpoints: checkpoints }); 
+      
+      // NEW: Save Phase 6 Video Link
+      await setDoc(doc(db, "birthdayContent", "phase6"), { url: videoUrl });
+
       alert("All changes pushed to the live site! 🚀");
     } catch (error) {
       alert(`Failed to save. Error: ${error.message}`);
@@ -137,7 +148,6 @@ function AdminDashboard() {
     ]);
   };
 
-  // IMAGE UPLOADER (Compresses)
   const handleImageUpload = async (id, file) => {
     if (!file) return;
     setUploadingIds(prev => ({ ...prev, [id]: true }));
@@ -161,7 +171,6 @@ function AdminDashboard() {
     }
   };
 
-  // NEW: AUDIO UPLOADER (No compression, auto resource type)
   const handleAudioUpload = async (file) => {
     if (!file) return;
     setUploadingIds(prev => ({ ...prev, audio: true }));
@@ -170,7 +179,6 @@ function AdminDashboard() {
       formData.append("file", file); 
       formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
       
-      // Note the /auto/upload endpoint handles audio/video correctly
       const response = await fetch(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/auto/upload`, {
         method: "POST",
         body: formData,
@@ -178,7 +186,7 @@ function AdminDashboard() {
       const data = await response.json();
       if (data.error) throw new Error(data.error.message);
       
-      setBgMusic(data.secure_url); // Save the audio URL
+      setBgMusic(data.secure_url); 
     } catch (error) {
       alert(`Audio Upload Failed: ${error.message}`);
     } finally {
@@ -231,7 +239,6 @@ function AdminDashboard() {
               </button>
             </div>
 
-            {/* Background Music Uploader Section */}
             <div className="p-6 bg-white/5 border border-white/10 rounded-[24px] space-y-4">
               <h3 className="text-sm font-bold text-fuchsia-400 uppercase tracking-widest">Background Music</h3>
               <div className="flex items-center gap-4">
@@ -241,49 +248,24 @@ function AdminDashboard() {
                     {uploadingIds.audio ? "Uploading..." : "Upload Audio Track"}
                   </div>
                 </label>
-                {bgMusic ? (
-                  <p className="text-emerald-400 text-sm">✅ Music uploaded and ready.</p>
-                ) : (
-                  <p className="text-slate-500 text-sm">No music uploaded yet.</p>
-                )}
+                {bgMusic ? <p className="text-emerald-400 text-sm">✅ Music uploaded.</p> : <p className="text-slate-500 text-sm">No music uploaded.</p>}
               </div>
             </div>
             
-            {/* Photos Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {orbitPhotos.map((p) => (
                 <div key={p.id} className="p-6 bg-white/5 border border-white/10 rounded-[24px] space-y-5 transition-all hover:border-white/20">
                   <div className="aspect-video bg-black/40 rounded-2xl overflow-hidden flex items-center justify-center border border-white/5 relative group">
-                    {p.url ? (
-                      <img src={p.url} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="text-center space-y-2">
-                        <span className="text-3xl block">🖼️</span>
-                        <p className="text-[10px] text-slate-500 uppercase tracking-widest">No image uploaded</p>
-                      </div>
-                    )}
-                    
-                    {uploadingIds[p.id] && (
-                      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center">
-                        <div className="w-6 h-6 border-2 border-fuchsia-500 border-t-transparent rounded-full animate-spin mb-2"></div>
-                        <p className="text-[10px] text-fuchsia-400 font-bold uppercase tracking-tighter">Uploading...</p>
-                      </div>
-                    )}
+                    {p.url ? <img src={p.url} className="w-full h-full object-cover" /> : <div className="text-center space-y-2"><span className="text-3xl block">🖼️</span><p className="text-[10px] text-slate-500 uppercase tracking-widest">No image</p></div>}
+                    {uploadingIds[p.id] && <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center animate-pulse">Uploading...</div>}
                   </div>
-
                   <div className="flex flex-col gap-4">
                     <label className="cursor-pointer">
                       <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(p.id, e.target.files[0])} />
-                      <div className="w-full py-3 bg-white/5 border border-white/10 rounded-xl text-center text-[10px] uppercase tracking-[0.2em] font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-all">
-                        {p.url ? "Change Photo" : "Select Image"}
-                      </div>
+                      <div className="w-full py-3 bg-white/5 border border-white/10 rounded-xl text-center text-[10px] uppercase tracking-[0.2em] font-bold text-slate-300 hover:bg-white/10 transition-all cursor-pointer">Select Image</div>
                     </label>
-
-                    <input className="w-full bg-black/60 border border-white/10 p-4 rounded-xl text-sm focus:border-fuchsia-500/50 outline-none transition-all" value={p.caption} onChange={(e) => updateOrbitPhoto(p.id, 'caption', e.target.value)} placeholder="Enter mist caption..." />
-                    
-                    <button onClick={() => setOrbitPhotos(prev => prev.filter(item => item.id !== p.id))} className="text-red-900/60 hover:text-red-500 text-[9px] uppercase tracking-widest font-bold self-end transition-colors">
-                      Remove Slot
-                    </button>
+                    <input className="w-full bg-black/60 border border-white/10 p-4 rounded-xl text-sm" value={p.caption} onChange={(e) => updateOrbitPhoto(p.id, 'caption', e.target.value)} placeholder="Caption..." />
+                    <button onClick={() => setOrbitPhotos(prev => prev.filter(item => item.id !== p.id))} className="text-red-900/60 hover:text-red-500 text-[9px] uppercase font-bold self-end transition-colors">Remove</button>
                   </div>
                 </div>
               ))}
@@ -299,30 +281,28 @@ function AdminDashboard() {
           </div>
         )}
 
-        {/* PHASE 5: TIMELINE */}
+        {/* PHASE 5 */}
         {activeTab === 3 && (
           <div className="space-y-8">
             <div className="flex justify-between items-center">
               <h1 className="text-3xl font-light">Timeline Checkpoints</h1>
-              <button onClick={addCheckpoint} className="px-4 py-2 bg-indigo-600/20 border border-indigo-500/50 rounded-xl text-xs text-indigo-300 hover:bg-indigo-600/40 transition-all uppercase tracking-widest font-bold">
+              <button onClick={addCheckpoint} className="px-4 py-2 bg-indigo-600/20 border border-indigo-500/50 rounded-xl text-xs text-indigo-300 font-bold">
                 + Add Date
               </button>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {checkpoints.map((cp) => (
                 <div key={cp.id} className="p-6 bg-white/5 border border-white/10 rounded-2xl space-y-4">
                   <div className="flex justify-between items-center">
                     <p className={`font-bold text-[10px] uppercase tracking-widest ${cp.isPermanent ? 'text-pink-400' : 'text-indigo-400'}`}>{cp.isPermanent ? 'Permanent Anchor' : 'Custom Event'}</p>
-                    {!cp.isPermanent && ( <button onClick={() => removeCheckpoint(cp.id)} className="text-red-500/50 hover:text-red-500 text-lg leading-none">×</button> )}
+                    {!cp.isPermanent && <button onClick={() => removeCheckpoint(cp.id)} className="text-red-500/50 hover:text-red-500 text-lg">×</button>}
                   </div>
-
                   <div className="space-y-3">
-                    <input type="text" className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-sm" value={cp.label} onChange={(e) => updateCheckpoint(cp.id, 'label', e.target.value)} placeholder="Event Label (e.g., First Date)" />
+                    <input type="text" className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-sm" value={cp.label} onChange={(e) => updateCheckpoint(cp.id, 'label', e.target.value)} placeholder="Event Label" />
                     <div className="flex gap-3">
                       <input type="date" className="flex-1 bg-black/40 border border-white/10 p-3 rounded-lg text-sm color-white" value={cp.date} onChange={(e) => updateCheckpoint(cp.id, 'date', e.target.value)} />
-                      <select className="flex-1 bg-black/40 border border-white/10 p-3 rounded-lg text-sm appearance-none" value={cp.color} onChange={(e) => updateCheckpoint(cp.id, 'color', e.target.value)}>
-                        {COLOR_OPTIONS.map(opt => ( <option key={opt.value} value={opt.value}>{opt.label} Dot</option> ))}
+                      <select className="flex-1 bg-black/40 border border-white/10 p-3 rounded-lg text-sm" value={cp.color} onChange={(e) => updateCheckpoint(cp.id, 'color', e.target.value)}>
+                        {COLOR_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                       </select>
                     </div>
                   </div>
@@ -331,6 +311,49 @@ function AdminDashboard() {
             </div>
           </div>
         )}
+
+        {/* NEW: PHASE 6 - VIDEO SECTION */}
+        {activeTab === 4 && (
+          <div className="space-y-8">
+            <h1 className="text-3xl font-light">Phase 6 Video (Family Wishes)</h1>
+            <div className="p-8 bg-white/5 border border-white/10 rounded-[32px] space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-red-600/20 flex items-center justify-center text-red-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+                </div>
+                <h3 className="text-lg font-medium text-white">YouTube Integration</h3>
+              </div>
+              
+              <div className="space-y-4">
+                <p className="text-sm text-slate-400 leading-relaxed">
+                  Since the family wishes video is 400MB, upload it as an <b>Unlisted</b> video on YouTube. 
+                  Paste the link here, and the app will automatically generate the cinematic player for Annu.
+                </p>
+                
+                <div className="relative">
+                  <input 
+                    className="w-full bg-black/60 border border-white/10 p-5 rounded-2xl text-fuchsia-300 placeholder-white/10 focus:border-fuchsia-500/50 outline-none transition-all pr-12" 
+                    value={videoUrl} 
+                    onChange={(e) => setVideoUrl(e.target.value)} 
+                    placeholder="https://www.youtube.com/watch?v=..." 
+                  />
+                  {videoUrl && (
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {videoUrl && (
+                <div className="mt-6 aspect-video bg-black rounded-xl overflow-hidden border border-white/5">
+                   <p className="text-[10px] text-slate-600 uppercase text-center mt-20">Preview will be live on site</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
       </main>
     </div>
   );

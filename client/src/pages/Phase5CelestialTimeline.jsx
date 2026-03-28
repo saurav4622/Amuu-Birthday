@@ -2,9 +2,10 @@ import { Float, OrbitControls, Stars, useTexture } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from "react-router-dom"; // <-- IMPORTED NAVIGATE
 import SunCalc from 'suncalc';
 import * as THREE from 'three';
-import { useGlobalAudio } from "../context/AudioContext"; // <-- IMPORTED GLOBAL AUDIO
+import { useGlobalAudio } from "../context/AudioContext";
 
 // --- Helpers ---
 const getDaysBetween = (d1, d2) => {
@@ -131,7 +132,6 @@ const RealisticMoonMain = ({ date, onMoonClick }) => {
 };
 
 // --- ✨ Interactive Constellations ---
-// NEW: Added isAnnuDate prop
 const InteractiveStarField = ({ date, isFirstDate, isAnnuDate, isSettled, onStarClick }) => {
   const pointsRef = useRef();
   const lineRef = useRef();
@@ -151,7 +151,7 @@ const InteractiveStarField = ({ date, isFirstDate, isAnnuDate, isSettled, onStar
     return hp;
   }, []);
 
-  // 2. NEW: The Face Outline / Silhouette (Annu's Birthday)
+  // 2. The Face Outline / Silhouette (Annu's Birthday)
   const faceOutlinePos = useMemo(() => {
     const fp = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
@@ -406,6 +406,7 @@ export default function CelestialTimeline() {
   const [activeTooltip, setActiveTooltip] = useState(null);
   const [isSettled, setIsSettled] = useState(true);
 
+  const navigate = useNavigate(); // <-- NAVIGATE HOOK DEFINED
   const { stopAudio } = useGlobalAudio();
 
   useEffect(() => {
@@ -422,7 +423,6 @@ export default function CelestialTimeline() {
   const firstDateCP = checkpoints.find(c => c.id === 'first_date');
   const isFirstDate = firstDateCP ? Math.abs(getDaysBetween(date, new Date(firstDateCP.date))) === 0 : false;
 
-  // NEW: Check if current date matches Annu's birthday
   const annuDateCP = checkpoints.find(c => c.id === 'annu_birth');
   const isAnnuDate = annuDateCP ? Math.abs(getDaysBetween(date, new Date(annuDateCP.date))) === 0 : false;
 
@@ -462,7 +462,6 @@ export default function CelestialTimeline() {
           <RealisticEarthDecor />
           <RealisticMoonMain date={date} onMoonClick={setActiveTooltip} />
           
-          {/* NEW: Passed isAnnuDate to the StarField */}
           <InteractiveStarField 
             date={date} 
             isFirstDate={isFirstDate} 
@@ -483,6 +482,14 @@ export default function CelestialTimeline() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* NEW: Navigation Button to Phase 6 */}
+      <button 
+        onClick={() => navigate("/wishes")} 
+        className="absolute bottom-12 right-10 px-8 py-3 rounded-full border border-fuchsia-500/30 text-fuchsia-300 text-[10px] tracking-[0.3em] uppercase hover:bg-fuchsia-500/20 transition-all z-30 cursor-pointer backdrop-blur-md"
+      >
+        See The Wishes →
+      </button>
 
       <TimelineControls 
         selectedDate={date} 

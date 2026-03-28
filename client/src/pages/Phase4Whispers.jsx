@@ -1,13 +1,17 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Typewriter from "typewriter-effect";
+import { useGlobalAudio } from "../context/AudioContext"; // <-- IMPORTED GLOBAL AUDIO
 import { db } from "../firebase";
 
 const Phase4Whispers = () => {
   const [poem, setPoem] = useState("");
   const navigate = useNavigate();
+  
+  // --- NEW: Global Audio Controls ---
+  const { isPlaying, toggleAudio, hasAudio } = useGlobalAudio();
 
   // Fetch the poem from Firestore (Phase 4 document)
   useEffect(() => {
@@ -24,6 +28,17 @@ const Phase4Whispers = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center px-6 py-20 overflow-hidden relative">
+      
+      {/* --- Global Audio Toggle Button --- */}
+      {hasAudio && (
+        <button 
+          onClick={toggleAudio}
+          className="absolute top-6 left-6 z-50 bg-black/40 hover:bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest text-fuchsia-300 transition-colors"
+        >
+          {isPlaying ? '🔊 Music On' : '🔇 Music Off'}
+        </button>
+      )}
+
       {/* Abstract Background Element */}
       <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-fuchsia-900/20 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-900/10 blur-[120px] rounded-full pointer-events-none" />

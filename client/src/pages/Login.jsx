@@ -39,7 +39,7 @@ const Login = () => {
     const result = await login(email, otp);
     
     if (result.success) {
-      navigate('/keyhole');
+      navigate('/intro');
     } else {
       setError(result.message);
     }

@@ -1,0 +1,30 @@
+@reference "../index.css";
+
+.phase1-container {
+  @apply w-full h-screen bg-cover bg-center bg-no-repeat overflow-hidden relative;
+}
+
+.cat-house-image {
+  @apply absolute z-10 cursor-pointer hover:scale-105 transition-transform duration-300 drop-shadow-2xl origin-bottom;
+  top: 180px;
+  left: 1055px;
+  width: 230.4px;
+  height: 247.15px;
+  transform: translate(89.6px, 0px);
+}
+
+.center-overlay {
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center w-full;
+}
+
+.magic-button {
+  @apply px-10 py-5 bg-linear-to-r from-purple-600 via-pink-500 to-rose-500 text-white text-3xl font-extrabold rounded-full shadow-[0_10px_20px_rgba(0,0,0,0.5)] border-2 border-white/20 transition-all duration-300 relative overflow-hidden;
+}
+
+.party-container {
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center bg-white/10 p-12 md:p-16 rounded-[3rem] backdrop-blur-xl border border-white/30 shadow-[0_0_80px_rgba(255,255,255,0.2)] w-[90%] md:w-fit;
+}
+
+.open-gift-button {
+  @apply px-12 py-5 bg-linear-to-r from-rose-500 to-orange-500 text-white text-3xl font-extrabold rounded-full shadow-[0_15px_30px_rgba(244,63,94,0.4)] border border-white/30 flex items-center gap-4 hover:shadow-[0_20px_40px_rgba(244,63,94,0.6)] transition-all;
+}

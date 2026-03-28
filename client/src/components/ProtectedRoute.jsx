@@ -5,6 +5,10 @@ import './ProtectedRoute.css';
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
+  // TODO: REVERT BEFORE DEPLOY - Bypassing auth for UI development
+  return children;
+  
+  /*
   if (loading) {
     return (
       <div className="loading-container">
@@ -18,6 +22,7 @@ const ProtectedRoute = ({ children }) => {
   }
 
   return children;
+  */
 };
 
 export default ProtectedRoute;

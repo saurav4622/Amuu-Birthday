@@ -5,10 +5,7 @@ import './ProtectedRoute.css';
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
-  // TODO: REVERT BEFORE DEPLOY - Bypassing auth for UI development
-  return children;
-  
-  /*
+  // 1. If Firebase is still determining if the user is logged in, show a loader
   if (loading) {
     return (
       <div className="loading-container">
@@ -17,12 +14,13 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
+  // 2. If the user is NOT logged in, redirect them to the login page immediately
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
+  // 3. If they are authenticated, let them see the content
   return children;
-  */
 };
 
 export default ProtectedRoute;

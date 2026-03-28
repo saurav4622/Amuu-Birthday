@@ -74,7 +74,7 @@ function AdminDashboard() {
   
   const [checkpoints, setCheckpoints] = useState([
     { id: 'start', date: '2002-06-04', label: 'My Birth', color: 'bg-indigo-400', isPermanent: true },
-    { id: 'annu_birth', date: '2004-03-30', label: 'Annu', color: 'bg-pink-400', isPermanent: true }
+    { id: 'amuu_birth', date: '2004-03-30', label: 'Amuu', color: 'bg-pink-400', isPermanent: true }
   ]);
 
   // NEW: State for Phase 6 Video URL
@@ -327,7 +327,7 @@ function AdminDashboard() {
               <div className="space-y-4">
                 <p className="text-sm text-slate-400 leading-relaxed">
                   Since the family wishes video is 400MB, upload it as an <b>Unlisted</b> video on YouTube. 
-                  Paste the link here, and the app will automatically generate the cinematic player for Annu.
+                  Paste the link here, and the app will automatically generate the cinematic player for Amuu.
                 </p>
                 
                 <div className="relative">

@@ -168,7 +168,7 @@ export default function Phase1Intro() {
               transition={{ type: 'spring', bounce: 0.5, duration: 1.5 }}
               className="absolute top-[20%] left-1/2 text-6xl md:text-8xl font-black text-white drop-shadow-xl text-center whitespace-nowrap leading-tight z-40"
             >
-              HAPPY BIRTHDAY <br/> <span className="text-yellow-300">ANNU!</span>
+              HAPPY BIRTHDAY <br/> <span className="text-yellow-300">AMUU!</span>
             </motion.h1>
             
             {/* Final Gift Image */}

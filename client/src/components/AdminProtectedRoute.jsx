@@ -1,22 +1,22 @@
 import { Navigate } from 'react-router-dom';
 import { useAdminAuth } from '../context/AdminAuthContext';
-import './ProtectedRoute.css';
 
 const AdminProtectedRoute = ({ children }) => {
-  const { isAdmin, ready } = useAdminAuth();
+  const { isAdmin, loading } = useAdminAuth();
 
-  if (!ready) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner">Loading...</div>
-      </div>
-    );
+  // 1. If we are still reading from localStorage, show nothing.
+  // This prevents the "flash" of the dashboard before the redirect.
+  if (loading) {
+    return null; 
   }
 
-  if (!isAdmin) {
+  // 2. CRITICAL: If isAdmin is NOT true, force them to the login page.
+  // This is the line that was likely missing or broken.
+  if (isAdmin !== true) {
     return <Navigate to="/secret-admin/login" replace />;
   }
 
+  // 3. Only if they are a verified admin do we show the Dashboard.
   return children;
 };
 

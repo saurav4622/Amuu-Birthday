@@ -1,7 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const ADMIN_SESSION_KEY = 'adminSession';
-
 const AdminAuthContext = createContext();
 
 export const useAdminAuth = () => {
@@ -15,13 +14,22 @@ export const useAdminAuth = () => {
 const ADMIN_PASSWORD = 'admin123';
 
 export const AdminAuthProvider = ({ children }) => {
+  // REPAIR: Initialize as false to ensure the default state is 'Locked'
   const [isAdmin, setIsAdmin] = useState(false);
-  const [ready, setReady] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const session = localStorage.getItem(ADMIN_SESSION_KEY);
-    setIsAdmin(session === 'true');
-    setReady(true);
+    
+    // REPAIR: Explicitly check for 'true' string and set boolean
+    if (session === 'true') {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+    
+    // Crucial: Only set loading to false AFTER the check is done
+    setLoading(false);
   }, []);
 
   const login = (password) => {
@@ -36,10 +44,12 @@ export const AdminAuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem(ADMIN_SESSION_KEY);
     setIsAdmin(false);
+    // Force a reload to clear any cached states if needed
+    window.location.href = '/secret-admin/login';
   };
 
   return (
-    <AdminAuthContext.Provider value={{ isAdmin, login, logout, ready }}>
+    <AdminAuthContext.Provider value={{ isAdmin, login, logout, loading }}>
       {children}
     </AdminAuthContext.Provider>
   );

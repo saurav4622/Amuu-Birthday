@@ -9,6 +9,7 @@ import finalGift from '../assets/final-gift.png';
 import catHouse from '../assets/cat-house.png';
 import rollingCat from '../assets/rolling-cat.png';
 import surpriseCat from '../assets/surprise-cat.png';
+import BirthdayGreeting from '../components/BirthdayGreeting';
 import './Phase1Intro.css';
 
 export default function Phase1Intro() {
@@ -44,6 +45,7 @@ export default function Phase1Intro() {
 
   return (
     <div className="phase1-container relative w-full h-screen overflow-hidden bg-[#87CEEB] flex items-center justify-center">
+      <BirthdayGreeting />
       {/* Container matching standard 1920x1080 aspect ratio to pin elements */}
       <div 
         className="relative pointer-events-none"

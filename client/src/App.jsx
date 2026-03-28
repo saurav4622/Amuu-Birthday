@@ -12,6 +12,7 @@ import AdminLogin from './pages/AdminLogin';
 import Login from './pages/Login';
 
 // New Phase Pages
+import Countdown from './pages/Countdown';
 import Phase1Intro from './pages/Phase1Intro';
 import Phase2Keyhole from './pages/Phase2Keyhole';
 import Phase3Orbit from './pages/Phase3Orbit';
@@ -27,7 +28,7 @@ function App() {
         <AudioProvider>
           <Router>
             <Routes>
-              <Route path="/login" element={<Login />} />
+              <Route path="/login" element={<Countdown><Login /></Countdown>} />
               <Route path="/secret-admin/login" element={<AdminLogin />} />
               
               <Route
@@ -90,8 +91,8 @@ function App() {
 />
 
               {/* If they type a wrong URL, send them back to login */}
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
+              <Route path="/" element={<Countdown><Navigate to="/login" replace /></Countdown>} />
+              <Route path="*" element={<Countdown><Navigate to="/login" replace /></Countdown>} />
             </Routes>
           </Router>
         </AudioProvider>
